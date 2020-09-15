@@ -30,7 +30,7 @@ function createListItem(discussion)
     const listItem = createElement({
         tag:'li',
         properies:{
-            className: "list-group-item d-flex justify-content-between align-items-center", 
+            className: "list-group-item d-flex justify-content-between align-items-center bg-light mb-2 border", 
         },
         children: [
             discussion.subject,

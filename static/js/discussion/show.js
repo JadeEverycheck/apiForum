@@ -73,7 +73,7 @@ function createMessage(msg, mail)
                     {
                         tag: 'button',
                         properies: {
-                            className: "btn btn-sm btn-danger ",
+                            className: "btn btn-sm btn-danger ml-2",
                             onclick: ()=>{deleteMessage(msg.id)},
                         },
                         children: [
