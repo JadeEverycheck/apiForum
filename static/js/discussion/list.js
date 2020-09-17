@@ -11,7 +11,7 @@ function signOut() {
 function deleteDiscussion(discussion){
 	if (confirm('Are you sure ? ')) {
 		let request = new XMLHttpRequest()
-		request.open('DELETE', host + '/discussions/' + discussion.Id, true)
+		request.open('DELETE', '/discussions/' + discussion.Id, true)
 		request.setRequestHeader('Authorization', 'Basic '+btoa(email+":"+password))
 		request.onload = () => {
 			if (request.status == 204) {
@@ -73,7 +73,7 @@ function createListItem(discussion)
 window.onload = function() {
 	user.appendChild(document.createTextNode(email))
 	let request = new XMLHttpRequest()
-	request.open('GET', host + "/discussions/", true)
+	request.open('GET',  "/discussions/", true)
 	request.setRequestHeader('Authorization', 'Basic '+btoa(email+":"+password))
 	request.onload = function() {
 		if (request.status != 200) {

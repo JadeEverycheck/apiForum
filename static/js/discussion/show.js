@@ -116,7 +116,7 @@ function createMessage(data, mail) {
 function deleteMessage(data) {
 	if (confirm('Are you sure ? ')) {
 		let deleteRequest = new XMLHttpRequest()
-		deleteRequest.open('DELETE', host + '/discussions/messages/' + data.Id, true)
+		deleteRequest.open('DELETE', '/discussions/messages/' + data.Id, true)
 		deleteRequest.setRequestHeader('Authorization', 'Basic '+btoa(email+":"+password))
 		deleteRequest.onload = () => {
 			if (deleteRequest.status != 204) {

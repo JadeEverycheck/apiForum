@@ -9,7 +9,7 @@ function signOut() {
 
 discForm.onsubmit = function(e) {
 	let request = new XMLHttpRequest()
-	request.open('POST', host + '/discussions/', true)
+	request.open('POST', '/discussions/', true)
 	request.setRequestHeader('Authorization', 'Basic '+btoa(email+":"+password))
 	request.onload = () => {
 		if (request.status == 201) {
