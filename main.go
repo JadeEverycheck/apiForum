@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	chimiddleware "github.com/go-chi/chi/middleware"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"net/http"
 	"new-forum/apiForum/api"
+	"new-forum/apiForum/middleware"
 	"os"
 	"path/filepath"
 	"strings"
@@ -46,8 +47,8 @@ func main() {
 	// defer db.Close()
 
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
+	r.Use(chimiddleware.Logger)
+	r.Use(chimiddleware.Recoverer)
 
 	workDir, _ := os.Getwd()
 	filesDir := http.Dir(filepath.Join(workDir, "static"))
@@ -61,7 +62,7 @@ func main() {
 		r.Post("/", api.CreateUser(db))
 	})
 	r.Route("/discussions", func(r chi.Router) {
-		r.Use(middleware.BasicAuth("real", api.Passwords))
+		r.Use(middleware.BasicAuth(db))
 		r.Get("/", api.GetAllDiscussions)
 		r.Get("/{id}", api.GetDiscussion)
 		r.Delete("/{id}", api.DeleteDiscussion)
