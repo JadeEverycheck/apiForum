@@ -3,6 +3,7 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"net/http"
 	"new-forum/apiForum/api"
@@ -23,7 +24,8 @@ func BasicAuth(db *gorm.DB) func(next http.Handler) http.Handler {
 				return
 			}
 
-			if pass != user.Password {
+			err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass))
+			if err != nil {
 				basicAuthFailed(w)
 				return
 			}

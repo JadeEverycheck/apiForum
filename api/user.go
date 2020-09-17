@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"github.com/go-chi/chi"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"io/ioutil"
 	"net/http"
@@ -71,11 +72,38 @@ func CreateUser(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 			response.BadRequest(w, err.Error())
 			return
 		}
-		user := User{Mail: u.Mail, Password: u.Password}
-		result := db.Create(&user)
+		hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.MinCost)
+		if err != nil {
+			response.ServerError(w, err.Error())
+			return
+		}
+		if len(u.Mail) == 0 {
+			response.BadRequest(w, "length of field `mail` must be positive")
+			return
+		}
+
+		if len(u.Password) == 0 {
+			response.BadRequest(w, "length of field `password` must be positive")
+			return
+		}
+
+		fetched := User{}
+		result := db.Where("mail = ?", u.Mail).First(&fetched)
+		if result.Error == nil && fetched.Id != 0 {
+			response.BadRequest(w, "email already used")
+			return
+		}
+
+		user := User{Mail: u.Mail, Password: string(hash)}
+		result = db.Create(&user)
 		if result.Error != nil {
 			response.ServerError(w, result.Error.Error())
+			return
 		}
-		response.Created(w, user)
+
+		response.Created(w, JsonUser{
+			Id:   user.Id,
+			Mail: user.Mail,
+		})
 	}
 }
