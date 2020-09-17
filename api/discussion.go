@@ -12,20 +12,49 @@ import (
 )
 
 type Discussion struct {
-	Id       int         `json: "id" gorm:"primaryKey; autoIncrement"`
-	Subject  string      `json: "subject"`
-	Messages []DBMessage `json: "-"`
+	Id       int `gorm:"primaryKey; autoIncrement"`
+	Subject  string
+	Messages []DBMessage
+	StaredId int
+	Stared   *DBMessage
+}
+
+type JsonDiscussion struct {
+	Id      int                `json:"id"`
+	Subject string             `json:"subject"`
+	Stared  *JsonStaredMessage `json:"stared,omitempty"`
+}
+
+type JsonStaredMessage struct {
+	Id      int    `json:"id"`
+	Content string `json:"content"`
 }
 
 func GetAllDiscussions(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		discussions := []Discussion{}
-		result := db.Find(&discussions)
+		result := db.Preload("Stared").Find(&discussions)
 		fmt.Println(result)
 		if result.Error != nil {
 			response.ServerError(w, result.Error.Error())
 		}
-		response.Ok(w, discussions)
+
+		jsonDiscussions := make([]JsonDiscussion, 0, len(discussions))
+		for _, d := range discussions {
+			jd := JsonDiscussion{
+				Id:      d.Id,
+				Subject: d.Subject,
+			}
+			fmt.Println(d)
+			if d.StaredId != 0 {
+				jd.Stared = &JsonStaredMessage{
+					Id:      d.Stared.Id,
+					Content: d.Stared.Content,
+				}
+			}
+			jsonDiscussions = append(jsonDiscussions, jd)
+		}
+		response.Ok(w, jsonDiscussions)
 	}
 }
 
@@ -84,5 +113,59 @@ func CreateDiscussion(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) 
 			response.ServerError(w, result.Error.Error())
 		}
 		response.Created(w, discussion)
+	}
+}
+
+func UpdateDiscussion(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		data := chi.URLParam(r, "id")
+		index, err := strconv.Atoi(data)
+		if err != nil {
+			response.BadRequest(w, err.Error())
+			return
+		}
+		discussion := Discussion{}
+		result := db.First(&discussion, index)
+		if result.Error != nil {
+			response.NotFound(w)
+			return
+		}
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			response.ServerError(w, err.Error())
+			return
+		}
+		r.Body.Close()
+		var updated Discussion
+		err = json.Unmarshal(body, &updated)
+		if err != nil {
+			response.BadRequest(w, err.Error())
+			return
+		}
+		discussion.Subject = updated.Subject
+
+		if updated.StaredId == 0 {
+			discussion.StaredId = 0
+			discussion.Stared = nil
+		} else {
+			message := DBMessage{}
+			result := db.Where("id = ?", updated.StaredId).Find(&message)
+			if result.Error != nil {
+				response.ServerError(w, result.Error.Error())
+				return
+			}
+			if message.DiscussionId != discussion.Id {
+				response.BadRequest(w, "Message is not int this discussion")
+				return
+			}
+			discussion.Stared = &message
+			discussion.StaredId = updated.StaredId
+		}
+
+		result = db.Save(&discussion)
+		if result.Error != nil {
+			response.ServerError(w, result.Error.Error())
+		}
+		response.Ok(w, discussion)
 	}
 }

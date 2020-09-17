@@ -69,6 +69,7 @@ func main() {
 		r.Get("/{id}", api.GetDiscussion(db))
 		r.Delete("/{id}", api.DeleteDiscussion(db))
 		r.Post("/", api.CreateDiscussion(db))
+		r.Put("/{id}", api.UpdateDiscussion(db))
 		r.Get("/{id}/messages", api.GetAllMessages(db))
 		r.Get("/messages/{id}", api.GetMessage(db))
 		r.Post("/{id}/messages", api.CreateMessage(db))

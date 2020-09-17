@@ -167,7 +167,7 @@ func CreateMessage(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 			response.BadRequest(w, err.Error())
 			return
 		}
-		message := DBMessage{Content: m.Content, DiscussionId: discussion.Id, UserId: user.Id}
+		message := DBMessage{Content: m.Content, DiscussionId: discussion.Id, UserId: user.Id, Date: time.Now()}
 		result = db.Create(&message)
 		if result.Error != nil {
 			response.ServerError(w, result.Error.Error())
