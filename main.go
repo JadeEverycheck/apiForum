@@ -56,7 +56,7 @@ func main() {
 
 	db.AutoMigrate(&api.User{})
 	db.AutoMigrate(&api.Discussion{})
-	db.AutoMigrate(&api.Message{})
+	db.AutoMigrate(&api.DBMessage{})
 
 	r.Route("/users", func(r chi.Router) {
 		r.Get("/", api.GetAllUsers(db))

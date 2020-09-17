@@ -12,9 +12,9 @@ import (
 )
 
 type Discussion struct {
-	Id       int       `json: "id" gorm:"primaryKey; autoIncrement"`
-	Subject  string    `json: "subject"`
-	Messages []Message `json: "-"`
+	Id       int         `json: "id" gorm:"primaryKey; autoIncrement"`
+	Subject  string      `json: "subject"`
+	Messages []DBMessage `json: "-"`
 }
 
 func GetAllDiscussions(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {

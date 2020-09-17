@@ -11,10 +11,15 @@ import (
 )
 
 type User struct {
-	Id       int    `json: "id" gorm:"primaryKey; autoIncrement"`
-	Mail     string `json: "mail"`
-	Password string `json: "password"`
-	Message  []Message
+	Id       int `gorm:"primaryKey; autoIncrement"`
+	Mail     string
+	Password string
+	Message  []DBMessage
+}
+
+type JsonUser struct {
+	Id   int    `json:"id"`
+	Mail string `json:"mail"`
 }
 
 func GetAllUsers(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +29,12 @@ func GetAllUsers(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 		if result.Error != nil {
 			response.ServerError(w, result.Error.Error())
 		}
-		response.Ok(w, users)
+
+		jsonUsers := make([]JsonUser, 0, len(users))
+		for _, u := range users {
+			jsonUsers = append(jsonUsers, JsonUser{Id: u.Id, Mail: u.Mail})
+		}
+		response.Ok(w, jsonUsers)
 	}
 }
 
