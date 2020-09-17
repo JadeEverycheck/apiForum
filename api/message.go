@@ -1,12 +1,13 @@
 package api
 
 import (
-	// "encoding/json"
-	// "github.com/go-chi/chi"
-	// "io/ioutil"
-	// "net/http"
-	// "new-forum/apiForum/response"
-	// "strconv"
+	"encoding/json"
+	"github.com/go-chi/chi"
+	"gorm.io/gorm"
+	"io/ioutil"
+	"net/http"
+	"new-forum/apiForum/response"
+	"strconv"
 	"time"
 )
 
@@ -14,11 +15,12 @@ type Message struct {
 	Id      int       `json: "id"`
 	Content string    `json: "content"`
 	Date    time.Time `json: "date"`
-	UserId  int       `json: "user id"`
+	// UserId       int       `json: "user_id"`
+	// DiscussionId int       `json: "discussion_id"`
 }
 
-// var messageCount = 0
-// var users = []User{}
+var messageCount = 0
+var users = []User{}
 
 // func appendMessage(content string, uId int, disc *Discussion) Message {
 // 	messageCount++
@@ -52,7 +54,17 @@ type Message struct {
 // 	return
 // }
 
-// func GetAllMessages(w http.ResponseWriter, r *http.Request) {
+func GetAllMessages(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		messages := []Message{}
+		result := db.Find(&messages)
+		if result.Error != nil {
+			response.ServerError(w, result.Error.Error())
+		}
+		response.Ok(w, messages)
+	}
+}
+
 // 	data := chi.URLParam(r, "id")
 // 	index, err := strconv.Atoi(data)
 // 	if err != nil {
@@ -68,7 +80,25 @@ type Message struct {
 // 	response.NotFound(w)
 // }
 
-// func GetMessage(w http.ResponseWriter, r *http.Request) {
+func GetMessage(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		data := chi.URLParam(r, "id")
+		index, err := strconv.Atoi(data)
+		if err != nil {
+			response.BadRequest(w, err.Error())
+			return
+		}
+		message := Message{}
+		result := db.First(&message, index)
+		if result.Error != nil {
+			response.NotFound(w)
+		}
+		if message.Id != 0 {
+			response.Ok(w, message)
+		}
+	}
+}
+
 // 	data := chi.URLParam(r, "id")
 // 	index, err := strconv.Atoi(data)
 // 	if err != nil {
@@ -86,7 +116,22 @@ type Message struct {
 // 	response.NotFound(w)
 // }
 
-// func DeleteMessage(w http.ResponseWriter, r *http.Request) {
+func DeleteMessage(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		data := chi.URLParam(r, "id")
+		index, err := strconv.Atoi(data)
+		if err != nil {
+			response.BadRequest(w, err.Error())
+			return
+		}
+		result := db.Delete(&Message{}, index)
+		if result.Error != nil {
+			response.NotFound(w)
+		}
+		response.Deleted(w)
+	}
+}
+
 // 	data := chi.URLParam(r, "id")
 // 	index, err := strconv.Atoi(data)
 // 	if err != nil {
@@ -97,7 +142,29 @@ type Message struct {
 // 	response.Deleted(w)
 // }
 
-// func CreateMessage(w http.ResponseWriter, r *http.Request) {
+func CreateMessage(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			response.ServerError(w, err.Error())
+			return
+		}
+		r.Body.Close()
+		var m Message
+		err = json.Unmarshal(body, &m)
+		if err != nil {
+			response.BadRequest(w, err.Error())
+			return
+		}
+		message := Message{Content: m.Content}
+		result := db.Create(&message)
+		if result.Error != nil {
+			response.ServerError(w, result.Error.Error())
+		}
+		response.Created(w, message)
+	}
+}
+
 // 	data := chi.URLParam(r, "id")
 // 	index, err := strconv.Atoi(data)
 // 	if err != nil {

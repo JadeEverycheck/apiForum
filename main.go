@@ -56,6 +56,7 @@ func main() {
 
 	db.AutoMigrate(&api.User{})
 	db.AutoMigrate(&api.Discussion{})
+	db.AutoMigrate(&api.Message{})
 
 	r.Route("/users", func(r chi.Router) {
 		r.Get("/", api.GetAllUsers(db))
@@ -68,10 +69,10 @@ func main() {
 		r.Get("/{id}", api.GetDiscussion(db))
 		r.Delete("/{id}", api.DeleteDiscussion(db))
 		r.Post("/", api.CreateDiscussion(db))
-		// r.Get("/{id}/messages", api.GetAllMessages)
-		// r.Get("/messages/{id}", api.GetMessage)
-		// r.Post("/{id}/messages", api.CreateMessage)
-		// r.Delete("/messages/{id}", api.DeleteMessage)
+		r.Get("/{id}/messages", api.GetAllMessages(db))
+		r.Get("/messages/{id}", api.GetMessage(db))
+		r.Post("/{id}/messages", api.CreateMessage(db))
+		r.Delete("/messages/{id}", api.DeleteMessage(db))
 	})
 	http.ListenAndServe(":"+port, r)
 

@@ -14,7 +14,6 @@ import (
 type Discussion struct {
 	Id      int    `json: "id" gorm:"primaryKey; autoIncrement"`
 	Subject string `json: "subject"`
-	// Message []Message `json: "messages, omitempty" gorm:"-"`
 }
 
 func GetAllDiscussions(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
