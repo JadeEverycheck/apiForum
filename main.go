@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 	"net/http"
 	"new-forum/apiForum/api"
 	"os"
@@ -36,24 +38,30 @@ func main() {
 		port = "8080"
 	}
 	fmt.Println("Début du forum")
-	api.InitData()
+
+	db, err := gorm.Open(sqlite.Open("test.sqlite"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+	// defer db.Close()
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+
 	workDir, _ := os.Getwd()
 	filesDir := http.Dir(filepath.Join(workDir, "static"))
 	FileServer(r, "/static", filesDir)
 
+	db.AutoMigrate(&api.User{})
+
 	r.Route("/users", func(r chi.Router) {
-		r.Get("/", api.GetAllUsers)
-		r.Get("/{id}", api.GetUser)
-		r.Delete("/{id}", api.DeleteUser)
-		r.Post("/", api.CreateUser)
-		r.Put("/{id}", api.UpdateUser)
+		r.Get("/", api.GetAllUsers(db))
+		r.Get("/{id}", api.GetUser(db))
+		r.Post("/", api.CreateUser(db))
 	})
 	r.Route("/discussions", func(r chi.Router) {
 		r.Use(middleware.BasicAuth("real", api.Passwords))
-
 		r.Get("/", api.GetAllDiscussions)
 		r.Get("/{id}", api.GetDiscussion)
 		r.Delete("/{id}", api.DeleteDiscussion)

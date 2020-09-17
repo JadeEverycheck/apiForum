@@ -13,6 +13,7 @@ func Json(w http.ResponseWriter, status int, payload interface{}) {
 		fmt.Println(err)
 		return
 	}
+	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(status)
 	fmt.Fprintln(w, string(data))
 }

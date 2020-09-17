@@ -18,6 +18,7 @@ type Message struct {
 }
 
 var messageCount = 0
+var users = []User{}
 
 func appendMessage(content string, uId int, disc *Discussion) Message {
 	messageCount++
