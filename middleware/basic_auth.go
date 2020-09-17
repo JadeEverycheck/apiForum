@@ -16,7 +16,7 @@ func BasicAuth(db *gorm.DB) func(next http.Handler) http.Handler {
 				return
 			}
 			user := api.User{}
-			result := db.Where("email = ?", email).First(&user)
+			result := db.Where("mail = ?", email).First(&user)
 			if result.Error != nil {
 				basicAuthFailed(w)
 				return
