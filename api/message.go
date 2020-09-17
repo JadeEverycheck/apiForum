@@ -12,11 +12,11 @@ import (
 )
 
 type Message struct {
-	Id      int       `json: "id"`
-	Content string    `json: "content"`
-	Date    time.Time `json: "date"`
-	// UserId       int       `json: "user_id"`
-	DiscussionId int `json: "discussion_id"`
+	Id           int       `json: "id"`
+	Content      string    `json: "content"`
+	Date         time.Time `json: "date"`
+	UserId       int       `json: "user_id"`
+	DiscussionId int       `json: "discussion_id"`
 }
 
 func GetAllMessages(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
@@ -83,6 +83,11 @@ func DeleteMessage(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 
 func CreateMessage(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		user, ok := r.Context().Value("user").(User)
+		if !ok {
+			response.ServerError(w, "User not registered")
+		}
+
 		data := chi.URLParam(r, "id")
 		index, err := strconv.Atoi(data)
 		if err != nil {
@@ -110,7 +115,7 @@ func CreateMessage(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 			response.BadRequest(w, err.Error())
 			return
 		}
-		message := Message{Content: m.Content, DiscussionId: discussion.Id}
+		message := Message{Content: m.Content, DiscussionId: discussion.Id, UserId: user.Id}
 		result = db.Create(&message)
 		if result.Error != nil {
 			response.ServerError(w, result.Error.Error())

@@ -14,6 +14,7 @@ type User struct {
 	Id       int    `json: "id" gorm:"primaryKey; autoIncrement"`
 	Mail     string `json: "mail"`
 	Password string `json: "password"`
+	Message  []Message
 }
 
 func GetAllUsers(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
