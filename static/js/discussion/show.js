@@ -45,6 +45,7 @@ window.onload = function() {
 	return false
 }
 
+
 function giveTitle(data) {
 	let title = document.getElementById('title')
 	let subject = JSON.parse(data)

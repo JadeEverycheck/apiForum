@@ -20,7 +20,10 @@
 			        				<a class="nav-link" href="./list.html">List of discussions <span class="sr-only"></span></a>
 			      				</li>
 			    			</ul>
-			    			<span class="navbar-text ml-4" id="user">User : </span>
+    						<span class="navbar-text" id="user">
+    							<i class="fas fa-user"></i>
+    							:
+    						</span>
 			    			<span class="ml-4">
 			    				<button onclick="signOut()" class="btn btn-secondary btn-sm">
 			    					<i class="fas fa-sign-out-alt"></i>
@@ -35,7 +38,7 @@
 			<form id="newDisc-form">
 				<div class="form-group mx-4">
     				<label for="subject">Add a subject</label>
-    				<textarea class="form-control" id="subject" rows="1"></textarea>
+    				<textarea class="form-control" id="subject" name="subject" rows="1" required></textarea>
   				</div>
   				<button type="submit" class="btn btn-primary ml-4">
   					<i class="fas fa-plus mr-2"></i>

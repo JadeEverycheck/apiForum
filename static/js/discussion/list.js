@@ -24,41 +24,50 @@ function deleteDiscussion(discussion){
 	}
 }
 
-function createListItem(discussion) {
-	let listDic = createElement({
-		tag: "li",
-		properies : {className: "list-group-item d-flex justify-content-between align-items-center mx-4 mt-2 border bg-light"},
-		children: [discussion.Subject,
-			{
-				tag: "div",
-				children: [
-					{
-						tag: "a",
-						properies: {href:"show.html?id="+discussion.Id, className:"btn btn-sm btn-primary"},
-						children: [
-						{
-							tag:"i",
-							properies: {className: "fas fa-eye justify-content-md-center"},
-
-						}]
-
-					},
-					{
-						tag:"button",
-						properies : {className: "btn btn-sm btn-danger ml-2",
-									onclick : () => deleteDiscussion(discussion)},
-						children : [
-						{
-							tag: "i",
-							properies: {className: "fas fa-trash-alt justify-content-md-center"},
-						}
-						]
-					}
-				]
-			}
-		],
-	})
-	return listDic
+function createListItem(discussion)
+{
+    const listItem = createElement({
+        tag:'li',
+        properies:{
+            className: "list-group-item d-flex justify-content-between align-items-center bg-light mb-2 border", 
+        },
+        children: [
+            discussion.subject,
+            {
+                tag:"div",
+                children:[
+                    {
+                        tag: 'a', 
+                        properies: {
+                            className: "btn btn-sm btn-primary",
+                            href: "show.html?id="+discussion.id
+                        }, 
+                        children: [
+                            {   
+                                tag: 'i',
+                                properies: {className: "fas fa-eye justify-content-md-center"}
+                            },
+                        ]
+                    },
+                    {
+                        tag: 'button', 
+                        properies: {
+                            className: "btn btn-sm btn-danger ml-2",
+                            onclick: ()=>{deleteDiscussion(discussion.id)}
+                        }, 
+                        children: [
+                            {   
+                                tag: 'i',
+                                properies: {className: "fas fa-trash-alt justify-content-md-center"}
+                            },
+                        ]
+                    },
+                ]
+            },
+        ]
+    })
+ 
+    return listItem  
 }
 
 window.onload = function() {

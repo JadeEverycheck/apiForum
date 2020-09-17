@@ -21,11 +21,14 @@
 			        				<a class="nav-link" href="./new.html">New discussion <span class="sr-only"></span></a>
 			      				</li>
 			    			</ul>
-			    			<span class="navbar-text ml-4" id="user">User : </span>
-			    			<span class="ml-4">
-			    				<button onclick="signOut()" class="btn btn-secondary btn-sm">
-			    					<i class="fas fa-sign-out-alt"></i>
-			    				</button>
+    						<span class="navbar-text" id="user">
+    							<i class="fas fa-user"></i>
+    							:
+    						</span>
+    						<span class="ml-4">
+    							<button onclick="signOut()" class="btn btn-sm btn-secondary">
+    								<i class="fas fa-sign-out-alt"></i>
+    							</button>
     						</span>
 			  			</div>
 					</nav>
@@ -35,7 +38,10 @@
 				<i class="far fa-comments ml-2"></i>
 			</h1>
 			<hr />
-			<div id="disc" class="overflow-auto">
+			<div class="row my-4 overflow-auto" style="max-height: 250px;">
+				<div class="col-12">
+					<div id="disc" class="list-group"></div>
+				</div>
 			</div>
 			<a href="./new.html" class="btn btn-secondary ml-4 mt-4" role="button">
 				<i class="fas fa-plus mr-2"></i>
