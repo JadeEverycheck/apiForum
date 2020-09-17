@@ -55,6 +55,7 @@ func main() {
 	FileServer(r, "/static", filesDir)
 
 	db.AutoMigrate(&api.User{})
+	db.AutoMigrate(&api.Discussion{})
 
 	r.Route("/users", func(r chi.Router) {
 		r.Get("/", api.GetAllUsers(db))
@@ -63,14 +64,14 @@ func main() {
 	})
 	r.Route("/discussions", func(r chi.Router) {
 		r.Use(middleware.BasicAuth(db))
-		r.Get("/", api.GetAllDiscussions)
-		r.Get("/{id}", api.GetDiscussion)
-		r.Delete("/{id}", api.DeleteDiscussion)
-		r.Post("/", api.CreateDiscussion)
-		r.Get("/{id}/messages", api.GetAllMessages)
-		r.Get("/messages/{id}", api.GetMessage)
-		r.Post("/{id}/messages", api.CreateMessage)
-		r.Delete("/messages/{id}", api.DeleteMessage)
+		r.Get("/", api.GetAllDiscussions(db))
+		r.Get("/{id}", api.GetDiscussion(db))
+		r.Delete("/{id}", api.DeleteDiscussion(db))
+		r.Post("/", api.CreateDiscussion(db))
+		// r.Get("/{id}/messages", api.GetAllMessages)
+		// r.Get("/messages/{id}", api.GetMessage)
+		// r.Post("/{id}/messages", api.CreateMessage)
+		// r.Delete("/messages/{id}", api.DeleteMessage)
 	})
 	http.ListenAndServe(":"+port, r)
 

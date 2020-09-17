@@ -40,7 +40,9 @@ func GetUser(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 		if result.Error != nil {
 			response.NotFound(w)
 		}
-		response.Ok(w, user)
+		if user.Id != 0 {
+			response.Ok(w, user)
+		}
 	}
 }
 
