@@ -16,6 +16,11 @@ class New extends React.Component {
   	   	this.props.history.push('/List');
   	}
 
+  	signOut() {
+		localStorage.clear()
+		this.props.history.push('/');
+  	}
+
 	render() {
 		return (
 			<div>
@@ -34,12 +39,12 @@ class New extends React.Component {
 			    		</ul>
     					<span className="navbar-text" id="user">
 							<FontAwesomeIcon icon={faUser} className="ml-2" />
-    						:
+    						: {localStorage.getItem('mail')}
     					</span>
 		    			<span className="ml-4">
-{/*			   				<button onclick="signOut()" class="btn btn-secondary btn-sm">
-			   					<i class="fas fa-sign-out-alt"></i>
-			   				</button>*/}
+    						<button onClick={this.signOut.bind(this)} className="btn btn-sm btn-secondary">
+								<FontAwesomeIcon icon={faSignOutAlt} />
+   							</button>
     					</span>
 		  			</div>
 				</nav>

@@ -1,9 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Route, Link, Switch, BrowserRouter} from "react-router-dom";
-
-import List from "./list.js";
 
 class Login extends React.Component {
 	constructor(props) {
