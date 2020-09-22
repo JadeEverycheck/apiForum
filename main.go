@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi"
 	chimiddleware "github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"net/http"
@@ -38,7 +39,7 @@ func main() {
 	if len(port) == 0 {
 		port = "8080"
 	}
-	fmt.Println("Début du forum")
+	fmt.Println("Début du forum", port)
 
 	db, err := gorm.Open(sqlite.Open("test.sqlite"), &gorm.Config{})
 	if err != nil {
@@ -49,13 +50,23 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(chimiddleware.Logger)
 	r.Use(chimiddleware.Recoverer)
+	r.Use(cors.Handler(cors.Options{
+		// AllowedOrigins: []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		AllowedOrigins: []string{"*"},
+		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 
 	workDir, _ := os.Getwd()
 	filesDir := http.Dir(filepath.Join(workDir, "static"))
 	FileServer(r, "/static", filesDir)
 
 	workDir, _ = os.Getwd()
-	filesDir = http.Dir(filepath.Join(workDir, "react"))
+	filesDir = http.Dir(filepath.Join(workDir, "react/my-app-react/build"))
 	FileServer(r, "/react", filesDir)
 
 	db.AutoMigrate(&api.User{})

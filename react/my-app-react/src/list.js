@@ -1,12 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { faSignOutAlt, faUser, faComments, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faUser, faComments, faPlus, faEye, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 
 class List extends React.Component {
+	constructor(props) {
+    	super(props);
+    	this.state = { 
+    		listItems: []
+    	};
+	}
+
 	componentWillMount() {
     	this.getData()
   	}
@@ -14,13 +21,41 @@ class List extends React.Component {
   	getData() {
   		const email = localStorage.getItem("mail")
   		const password = localStorage.getItem("password")
-  	  	var request = new XMLHttpRequest()
-    	request.addEventListener('load', () => {
-      		console.log("Test: ", request)
-    	})
-		request.open('GET',  "/discussions/")
-    	request.setRequestHeader('Authorization', 'Basic '+btoa(email+":"+password))
-    	request.send()
+  		let myInit = { method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' :'Basic '+btoa(email+":"+password)
+            }
+        };
+        let myRequest = new Request('http://localhost:8080/discussions', myInit);
+
+        fetch(myRequest,myInit).then(r=>r.json()).then(data => {
+  			let newState ={ listItems: [] }; 
+  			console.log(data)
+  			data.forEach(d=>newState.listItems.push({subject:d.subject,id:d.id}))
+  			this.setState(newState);
+  		}).catch(function(error) {
+  			console.log('Problem with fetch operation: ' + error.message);
+		});
+  	}
+
+  	deleteItem(id){
+  		const email = localStorage.getItem("mail")
+  		const password = localStorage.getItem("password")
+  		let myInit = { method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' :'Basic '+btoa(email+":"+password)
+            }
+        };
+        let myRequest = new Request('http://localhost:8080/discussions/'+id, myInit);
+
+        fetch(myRequest,myInit).then(data => {
+  			let newState ={ listItems: this.state.listItems.filter(i=>i.id!=id) }; 
+  			this.setState(newState);
+  		}).catch(function(error) {
+  			console.log('Problem with fetch operation: ' + error.message);
+		});
   	}
 
   	signOut() {
@@ -29,6 +64,8 @@ class List extends React.Component {
   	}
 
 	render() {
+		const { listItems } = this.state
+
 		return (
 			<div>
 				<nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -45,7 +82,7 @@ class List extends React.Component {
 			      			</li>
 			    		</ul>
     					<span className="navbar-text" id="user">
-    						<FontAwesomeIcon icon={faUser} className="ml-2" />
+    						<FontAwesomeIcon icon={faUser} className="mx-2" />
     						: {localStorage.getItem('mail')}
     					</span>
     					<span className="ml-4">
@@ -60,7 +97,23 @@ class List extends React.Component {
 				</h1>
 				<hr />
 				<div className="col-12">
-					<div id="disc" className="list-group"></div>
+					<div id="disc" className="list-group">
+						{
+							listItems.map((item,index) => (
+								<li key={index} className="list-group-item d-flex justify-content-between align-items-center bg-light mb-2 border">
+									{item.subject}
+									<div>
+										<a className="btn btn-sm btn-primary">
+											<FontAwesomeIcon icon={faEye} className="justify-content-md-center" />
+										</a>
+										<button className="btn btn-sm btn-danger ml-2" onClick={()=>this.deleteItem(item.id)}>
+												<FontAwesomeIcon icon={faTrashAlt} className="justify-content-md-center" />
+										</button>
+									</div>
+								</li>
+							))
+						}
+					</div>
 				</div>
 				<a href="/New" className="btn btn-secondary ml-4 mt-4" role="button">
 					<FontAwesomeIcon icon={faPlus} className="mr-2" />
@@ -78,4 +131,4 @@ ReactDOM.render(
 	document.getElementById('root')
 );
 
-library.add(faSignOutAlt, faUser, faComments, faPlus);
+library.add(faSignOutAlt, faUser, faComments, faPlus, faEye, faTrashAlt);
