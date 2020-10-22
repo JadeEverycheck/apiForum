@@ -50,12 +50,12 @@ class New extends React.Component {
 		return (
 			<div>
 				<nav className="navbar navbar-expand-lg navbar-light bg-light">
-  					<span className="navbar-brand w-25">Forum de Jade</span>
+  					<span className="navbar-brand">Forum de Jade</span>
 			  		<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			    		<span className="navbar-toggler-icon"></span>
 			  		</button>
 					<div className="collapse navbar-collapse" id="navbarNav">
-		    			<ul className="navbar-nav w-50">
+		    			<ul className="navbar-nav mr-auto">
 		      				<li className="nav-item active">
 		        				<a className="nav-link ml-4" href="/List">List of discussions 
 		        					<span className="sr-only"></span>
@@ -66,7 +66,7 @@ class New extends React.Component {
 							<FontAwesomeIcon icon={faUser} className="mx-2" />
     						: {localStorage.getItem('mail')}
     					</span>
-		    			<span className="ml-4">
+		    			<span className="mx-4">
     						<button onClick={this.signOut} className="btn btn-sm btn-secondary ml-4">
 								<FontAwesomeIcon icon={faSignOutAlt} />
    							</button>
