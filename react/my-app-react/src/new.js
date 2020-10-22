@@ -7,13 +7,38 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 
 
 class New extends React.Component {
+	constructor(props) {
+    	super(props);
+    	this.state = {
+    		subject: '',
+    	};
+   	}
+
 	setSubject = (event) => {
     	this.setState({subject: event.target.value});
   	}
 
-  	addDiscussion = () => {
-  		alert('Button clicked')
-  	   	this.props.history.push('/List');
+  addDiscussion = () => {
+  	  	const email = localStorage.getItem("mail")
+  		const password = localStorage.getItem("password")
+		fetch('http://localhost:8080/discussions/', {
+  			method: 'POST',
+  			headers: {
+    			'Accept': 'application/json',
+    			'Content-Type': 'application/json',
+    			'Authorization' :'Basic '+btoa(email+":"+password)
+  			},
+  			body: JSON.stringify({
+   	 			subject: this.state.subject,
+  			})
+		})
+		.then(
+			this.props.history.push('/List')
+		)
+		.catch(function(error) {
+  			console.log('Problem with fetch operation: ' + error.message);
+  			alert('pb')
+		});
   	}
 
   	signOut() {
@@ -25,24 +50,24 @@ class New extends React.Component {
 		return (
 			<div>
 				<nav className="navbar navbar-expand-lg navbar-light bg-light">
-  					<a className="navbar-brand w-25">Forum de Jade</a>
+  					<span className="navbar-brand w-25">Forum de Jade</span>
 			  		<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			    		<span className="navbar-toggler-icon"></span>
 			  		</button>
 					<div className="collapse navbar-collapse" id="navbarNav">
 		    			<ul className="navbar-nav w-50">
 		      				<li className="nav-item active">
-		        				<a className="nav-link" href="/List">List of discussions 
+		        				<a className="nav-link ml-4" href="/List">List of discussions 
 		        					<span className="sr-only"></span>
 		        				</a>
 			      			</li>
 			    		</ul>
-    					<span className="navbar-text" id="user">
-							<FontAwesomeIcon icon={faUser} className="ml-2" />
+    					<span className="navbar-text ml-4" id="user">
+							<FontAwesomeIcon icon={faUser} className="mx-2" />
     						: {localStorage.getItem('mail')}
     					</span>
 		    			<span className="ml-4">
-    						<button onClick={this.signOut.bind(this)} className="btn btn-sm btn-secondary">
+    						<button onClick={this.signOut} className="btn btn-sm btn-secondary ml-4">
 								<FontAwesomeIcon icon={faSignOutAlt} />
    							</button>
     					</span>

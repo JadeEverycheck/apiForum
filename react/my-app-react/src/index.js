@@ -9,6 +9,7 @@ import { Route, Link, Switch, BrowserRouter} from "react-router-dom";
 import Login from "./login.js";
 import List from "./list.js";
 import New from "./new.js";
+import Show from "./show.js";
 
 
 class Index extends React.Component {
@@ -21,6 +22,7 @@ class Index extends React.Component {
 						<Route path="/Login" component={Login} />
 						<Route path="/List" component={List} />
 						<Route path="/New" component={New} />
+						<Route path={"/Show/:id"} component={Show} />
 					</Switch>
 				</BrowserRouter>
 			</div>

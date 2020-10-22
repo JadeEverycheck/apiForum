@@ -7,6 +7,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 
 
 class List extends React.Component {
+	_isMounted = false;
 	constructor(props) {
     	super(props);
     	this.state = { 
@@ -14,8 +15,13 @@ class List extends React.Component {
     	};
 	}
 
-	componentWillMount() {
+	componentDidMount() {
+		this._isMounted = true;
     	this.getData()
+  	}
+  	
+  	componentWillUnmount() {
+    	this._isMounted = false;
   	}
 
   	getData() {
@@ -31,9 +37,10 @@ class List extends React.Component {
 
         fetch(myRequest,myInit).then(r=>r.json()).then(data => {
   			let newState ={ listItems: [] }; 
-  			console.log(data)
   			data.forEach(d=>newState.listItems.push({subject:d.subject,id:d.id}))
-  			this.setState(newState);
+  			if (this._isMounted) {
+	  			this.setState(newState);
+	  		}
   		}).catch(function(error) {
   			console.log('Problem with fetch operation: ' + error.message);
 		});
@@ -51,7 +58,7 @@ class List extends React.Component {
         let myRequest = new Request('http://localhost:8080/discussions/'+id, myInit);
 
         fetch(myRequest,myInit).then(data => {
-  			let newState ={ listItems: this.state.listItems.filter(i=>i.id!=id) }; 
+  			let newState ={ listItems: this.state.listItems.filter(i=>i.id!==id) }; 
   			this.setState(newState);
   		}).catch(function(error) {
   			console.log('Problem with fetch operation: ' + error.message);
@@ -63,30 +70,37 @@ class List extends React.Component {
 		this.props.history.push('/');
   	}
 
+  	show(id, subject) {
+  		console.log(id)
+		localStorage.setItem('id', id);
+		localStorage.setItem('subject', subject);
+  		this.props.history.push('/Show/' + id);
+  	}
+
 	render() {
 		const { listItems } = this.state
 
 		return (
 			<div>
 				<nav className="navbar navbar-expand-lg navbar-light bg-light">
-  					<a className="navbar-brand w-25">Forum de Jade</a>
+  					<span className="navbar-brand w-25">Forum de Jade</span>
 			  		<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			    		<span className="navbar-toggler-icon"></span>
 			  		</button>
 			  		<div className="collapse navbar-collapse" id="navbarNav">
 			    		<ul className="navbar-nav w-50">
 			      			<li className="nav-item active">
-			        			<a className="nav-link" href="/New">New discussion 
+			        			<a className="nav-link ml-4" href="/New">New discussion 
 			        				<span className="sr-only"></span>
 			        			</a>
 			      			</li>
 			    		</ul>
-    					<span className="navbar-text" id="user">
+    					<span className="navbar-text ml-4" id="user">
     						<FontAwesomeIcon icon={faUser} className="mx-2" />
     						: {localStorage.getItem('mail')}
     					</span>
     					<span className="ml-4">
-    						<button onClick={this.signOut.bind(this)} className="btn btn-sm btn-secondary">
+    						<button onClick={this.signOut.bind(this)} className="btn btn-sm btn-secondary ml-4">
 								<FontAwesomeIcon icon={faSignOutAlt} />
    							</button>
    						</span>
@@ -97,15 +111,15 @@ class List extends React.Component {
 				</h1>
 				<hr />
 				<div className="col-12">
-					<div id="disc" className="list-group">
+					<div className="list-group">
 						{
 							listItems.map((item,index) => (
 								<li key={index} className="list-group-item d-flex justify-content-between align-items-center bg-light mb-2 border">
 									{item.subject}
 									<div>
-										<a className="btn btn-sm btn-primary">
+										<button className="btn btn-sm btn-primary" onClick={() => this.show(item.id, item.subject)}>
 											<FontAwesomeIcon icon={faEye} className="justify-content-md-center" />
-										</a>
+										</button>
 										<button className="btn btn-sm btn-danger ml-2" onClick={()=>this.deleteItem(item.id)}>
 												<FontAwesomeIcon icon={faTrashAlt} className="justify-content-md-center" />
 										</button>
