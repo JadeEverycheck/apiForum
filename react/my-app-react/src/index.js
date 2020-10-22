@@ -16,7 +16,7 @@ class Index extends React.Component {
 	render() {
 		return (
 			<div>
-				<HashRouter>
+				<BrowserRouter basename="/react">
 					<Switch>
 						<Route exact path="/" component={Welcome} />
 						<Route path="/Login" component={Login} />
@@ -24,7 +24,7 @@ class Index extends React.Component {
 						<Route path="/New" component={New} />
 						<Route path={"/Show/:id"} component={Show} />
 					</Switch>
-				</HashRouter>
+				</BrowserRouter>
 			</div>
 		);
 	}
