@@ -117,7 +117,7 @@ class Show extends React.Component {
 			        			</a>
 			      			</li>
 			    		</ul>
-    					<span className="navbar-text ml-4" id="user">
+    					<span className="navbar-text mx-4" id="user">
     						<FontAwesomeIcon icon={faUser} className="mx-2" />
     						: {localStorage.getItem('mail')}
     					</span>
