@@ -1,1 +1,1 @@
-web: apiForum
+web: bin/apiForum
