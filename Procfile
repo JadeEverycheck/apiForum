@@ -1,1 +1,1 @@
-web: apiForum
+web: go run main.go
