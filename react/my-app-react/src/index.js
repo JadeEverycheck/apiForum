@@ -47,7 +47,7 @@ class Welcome extends React.Component {
 
 ReactDOM.render(
 	<Index />,
-	document.querySelector("#root")
+	document.getElementById('root')
 );
 
 
