@@ -24,6 +24,7 @@ type JsonUser struct {
 }
 
 func GetAllUsers(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	panic('cc')
 	return func(w http.ResponseWriter, r *http.Request) {
 		users := []User{}
 		result := db.Find(&users)

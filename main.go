@@ -36,7 +36,7 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 
 func main() {
 	port := os.Getenv("PORT")
-	if len(port) == 0 {
+	if port == "" {
 		port = "8080"
 	}
 	fmt.Println("Début du forum", port)
