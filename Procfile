@@ -1,1 +1,1 @@
-web: bin/apiForum
+web: go run apiForum/main.go
