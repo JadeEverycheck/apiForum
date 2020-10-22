@@ -1,1 +1,1 @@
-web: apiForum
+web: go ./apiForum/main.go
