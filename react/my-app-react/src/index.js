@@ -11,6 +11,7 @@ import List from "./list.js";
 import New from "./new.js";
 import Show from "./show.js";
 
+console.log('cc')
 
 class Index extends React.Component {
 	render() {

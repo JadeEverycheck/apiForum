@@ -67,7 +67,7 @@ func main() {
 
 	workDir, _ = os.Getwd()
 	filesDir = http.Dir(filepath.Join(workDir, "react/my-app-react/public"))
-	FileServer(r, "/react", filesDir)
+	FileServer(r, "/", filesDir)
 
 	db.AutoMigrate(&api.User{})
 	db.AutoMigrate(&api.Discussion{})
