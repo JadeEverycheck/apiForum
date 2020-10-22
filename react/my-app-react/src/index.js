@@ -14,6 +14,7 @@ import Show from "./show.js";
 
 class Index extends React.Component {
 	render() {
+		console.log('cc')
 		return (
 			<div>
 				<BrowserRouter basename="/react">
