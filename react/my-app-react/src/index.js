@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { Route, Link, Switch, BrowserRouter} from "react-router-dom";
+import { Route, Link, Switch, HashRouter, BrowserRouter} from "react-router-dom";
 
 import Login from "./login.js";
 import List from "./list.js";
@@ -16,7 +16,7 @@ class Index extends React.Component {
 	render() {
 		return (
 			<div>
-				<BrowserRouter>
+				<HashRouter>
 					<Switch>
 						<Route exact path="/" component={Welcome} />
 						<Route path="/Login" component={Login} />
@@ -24,7 +24,7 @@ class Index extends React.Component {
 						<Route path="/New" component={New} />
 						<Route path={"/Show/:id"} component={Show} />
 					</Switch>
-				</BrowserRouter>
+				</HashRouter>
 			</div>
 		);
 	}
