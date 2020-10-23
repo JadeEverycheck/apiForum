@@ -62,11 +62,10 @@ func main() {
 	}))
 
 	workDir, _ := os.Getwd()
-	filesDir := http.Dir(filepath.Join(workDir, "static"))
-	FileServer(r, "/static", filesDir)
+	// filesDir := http.Dir(filepath.Join(workDir, "static"))
+	// FileServer(r, "/static", filesDir)
 
-	workDir, _ = os.Getwd()
-	filesDir = http.Dir(filepath.Join(workDir, "react/my-app-react/build"))
+	filesDir := http.Dir(filepath.Join(workDir, "react/my-app-react/build"))
 	FileServer(r, "/", filesDir)
 
 	db.AutoMigrate(&api.User{})
@@ -90,6 +89,10 @@ func main() {
 		r.Post("/{id}/messages", api.CreateMessage(db))
 		r.Delete("/messages/{id}", api.DeleteMessage(db))
 	})
-	http.ListenAndServe(":"+port, r)
+	err = http.ListenAndServe(":"+port, r)
+
+	if err != nil {
+		panic("failed to listen" + err.Error())
+	}
 
 }
