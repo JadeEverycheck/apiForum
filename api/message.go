@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-chi/chi"
 	"gorm.io/gorm"
 	"io/ioutil"
@@ -67,22 +66,16 @@ func GetAllMessages(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 			userIdsLoaded[id] = struct{}{}
 		}
 
-		fmt.Println(userIds)
-
 		users := []User{}
 		result = db.Where(userIds).Find(&users)
 		if result.Error != nil {
 			response.ServerError(w, result.Error.Error())
 		}
 
-		fmt.Println(users)
-
 		mailFromId := map[int]string{}
 		for _, u := range users {
 			mailFromId[u.Id] = u.Mail
 		}
-
-		fmt.Println(mailFromId)
 
 		jsonMessages := make([]JsonMessage, 0, len(messages))
 		for _, msg := range messages {

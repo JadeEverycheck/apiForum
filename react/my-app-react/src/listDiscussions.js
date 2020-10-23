@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 
-class List extends React.Component {
+class ListDiscussions extends React.Component {
 	_isMounted = false;
 	constructor(props) {
     	super(props);
@@ -33,7 +33,7 @@ class List extends React.Component {
                 'Authorization' :'Basic '+btoa(email+":"+password)
             }
         };
-        let myRequest = new Request('http://localhost:8080/discussions', myInit);
+        let myRequest = new Request('/discussions', myInit);
 
         fetch(myRequest,myInit).then(r=>r.json()).then(data => {
   			let newState ={ listItems: [] }; 
@@ -55,7 +55,7 @@ class List extends React.Component {
                 'Authorization' :'Basic '+btoa(email+":"+password)
             }
         };
-        let myRequest = new Request('http://localhost:8080/discussions/'+id, myInit);
+        let myRequest = new Request('/discussions/'+id, myInit);
 
         fetch(myRequest,myInit).then(data => {
   			let newState ={ listItems: this.state.listItems.filter(i=>i.id!==id) }; 
@@ -74,7 +74,7 @@ class List extends React.Component {
   		console.log(id)
 		localStorage.setItem('id', id);
 		localStorage.setItem('subject', subject);
-  		this.props.history.push('/Show/' + id);
+  		this.props.history.push('/ShowDiscussion/' + id);
   	}
 
 	render() {
@@ -90,9 +90,9 @@ class List extends React.Component {
 			  		<div className="collapse navbar-collapse" id="navbarNav">
 			    		<ul className="navbar-nav mr-auto">
 			      			<li className="nav-item active">
-			        			<a className="nav-link ml-4" href="/New">New discussion 
+			        			<button className="nav-link ml-4 btn btn-secondary text-white btn-sm" onClick={() => this.props.history.push('/NewDiscussion')}>New discussion 
 			        				<span className="sr-only"></span>
-			        			</a>
+			        			</button>
 			      			</li>
 			    		</ul>
     					<span className="navbar-text mx-4" id="user">
@@ -129,19 +129,19 @@ class List extends React.Component {
 						}
 					</div>
 				</div>
-				<a href="/New" className="btn btn-secondary ml-4 mt-4" role="button">
+				<button className="btn btn-secondary ml-4 mt-4" onClick={() => this.props.history.push('/NewDiscussion')}>
 					<FontAwesomeIcon icon={faPlus} className="mr-2" />
 					Add a discussion
-				</a>
+				</button>
 			</div>
 		);
 	}
 }
 
-export default List;
+export default ListDiscussions;
 
 ReactDOM.render(
-	<List />,
+	<ListDiscussions />,
 	document.getElementById('root')
 );
 

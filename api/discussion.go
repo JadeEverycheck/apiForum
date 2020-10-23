@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-chi/chi"
 	"gorm.io/gorm"
 	"io/ioutil"
@@ -34,7 +33,7 @@ func GetAllDiscussions(db *gorm.DB) func(w http.ResponseWriter, r *http.Request)
 	return func(w http.ResponseWriter, r *http.Request) {
 		discussions := []Discussion{}
 		result := db.Preload("Stared").Find(&discussions)
-		fmt.Println(result)
+
 		if result.Error != nil {
 			response.ServerError(w, result.Error.Error())
 		}
@@ -45,7 +44,6 @@ func GetAllDiscussions(db *gorm.DB) func(w http.ResponseWriter, r *http.Request)
 				Id:      d.Id,
 				Subject: d.Subject,
 			}
-			fmt.Println(d)
 			if d.StaredId != 0 {
 				jd.Stared = &JsonStaredMessage{
 					Id:      d.Stared.Id,

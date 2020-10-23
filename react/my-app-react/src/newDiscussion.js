@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 
-class New extends React.Component {
+class NewDiscussion extends React.Component {
 	constructor(props) {
     	super(props);
     	this.state = {
@@ -21,7 +21,7 @@ class New extends React.Component {
   addDiscussion = () => {
   	  	const email = localStorage.getItem("mail")
   		const password = localStorage.getItem("password")
-		fetch('http://localhost:8080/discussions/', {
+		fetch('/discussions/', {
   			method: 'POST',
   			headers: {
     			'Accept': 'application/json',
@@ -33,7 +33,7 @@ class New extends React.Component {
   			})
 		})
 		.then(
-			this.props.history.push('/List')
+			this.props.history.push('/ListDiscussions')
 		)
 		.catch(function(error) {
   			console.log('Problem with fetch operation: ' + error.message);
@@ -57,9 +57,9 @@ class New extends React.Component {
 					<div className="collapse navbar-collapse" id="navbarNav">
 		    			<ul className="navbar-nav mr-auto">
 		      				<li className="nav-item active">
-		        				<a className="nav-link ml-4" href="/List">List of discussions 
+		        				<button className="nav-link ml-4 btn btn-secondary text-white btn-sm" onClick={() => this.props.history.push('/ListDiscussions')}>List of discussions 
 		        					<span className="sr-only"></span>
-		        				</a>
+		        				</button>
 			      			</li>
 			    		</ul>
     					<span className="navbar-text mx-4" id="user">
@@ -75,7 +75,7 @@ class New extends React.Component {
 				</nav>
 				<h1 className=" mt-4 ml-4">Create a new discussion</h1>
 				<hr />
-				<form id="newDisc-form">
+				<form>
 					<div className="form-group mx-4">
     					<label htmlFor="subject">Add a subject</label>
     					<textarea className="form-control" id="subject" name="subject" rows="1" onChange={this.setSubject} required></textarea>
@@ -90,10 +90,10 @@ class New extends React.Component {
 	}
 }
 
-export default New;
+export default NewDiscussion;
 
 ReactDOM.render(
-	<New />,
+	<NewDiscussion />,
 	document.getElementById('root')
 );
 

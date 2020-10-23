@@ -20,7 +20,7 @@ class Login extends React.Component {
 
   	formSubmited = (event) => {
     	event.preventDefault();
-    	this.props.history.push('/List');
+    	this.props.history.push('/ListDiscussions');
   	}
 
 	render() {

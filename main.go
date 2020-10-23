@@ -15,6 +15,25 @@ import (
 	"strings"
 )
 
+type FakeFileSystem struct {
+	fs http.FileSystem
+}
+
+func (ffs *FakeFileSystem) Open(name string) (http.File, error) {
+	fmt.Println("opening : " + name)
+	file, err := ffs.fs.Open(name)
+	if err != nil {
+		return ffs.fs.Open("/index.html")
+	}
+	return file, nil
+}
+
+func ToFakeFs(fs http.FileSystem) http.FileSystem {
+	return &FakeFileSystem{
+		fs: fs,
+	}
+}
+
 func FileServer(r chi.Router, path string, root http.FileSystem) {
 	if strings.ContainsAny(path, "{}*") {
 		panic("FileServer does not permit any URL parameters.")
@@ -66,7 +85,7 @@ func main() {
 	// FileServer(r, "/static", filesDir)
 
 	filesDir := http.Dir(filepath.Join(workDir, "react/my-app-react/build"))
-	FileServer(r, "/", filesDir)
+	FileServer(r, "/", ToFakeFs(filesDir))
 
 	db.AutoMigrate(&api.User{})
 	db.AutoMigrate(&api.Discussion{})

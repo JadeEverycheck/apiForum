@@ -5,7 +5,7 @@ import { faSignOutAlt, faUser, faComments, faPlus, faEye, faTrashAlt, faBookOpen
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from '@fortawesome/fontawesome-svg-core';
 
-class Show extends React.Component {
+class ShowDiscussion extends React.Component {
 	_isMounted = false;
 	constructor(props) {
     	super(props);
@@ -35,7 +35,7 @@ class Show extends React.Component {
                 'Authorization' :'Basic '+btoa(email+":"+password)
             }
         };
-        let myRequest = new Request('http://localhost:8080/discussions/' + this.state.id + "/messages", myInit);
+        let myRequest = new Request('/discussions/' + this.state.id + "/messages", myInit);
 
         fetch(myRequest,myInit).then(r=>r.json()).then(data => {
   			let newState ={ listItems: [] }; 
@@ -57,10 +57,10 @@ class Show extends React.Component {
 		this.props.history.push('/');
   	}
 
-	addMessage() {
+	addMessage(e) {
   		const email = localStorage.getItem("mail")
   		const password = localStorage.getItem("password")
-		fetch('http://localhost:8080/discussions/' + this.state.id +'/messages', {
+		fetch('/discussions/' + this.state.id +'/messages', {
   			method: 'POST',
   			headers: {
     			'Accept': 'application/json',
@@ -70,7 +70,14 @@ class Show extends React.Component {
   			body: JSON.stringify({
    	 			content: this.state.content,
   			})
-		})
+		}).then( d => {
+        let newState ={ listItems: [] }; 
+        this.state.listitem.forEach(d=>newState.listItems.push(d))
+        newState.listItems.push({date: d.date, user:d.user.mail, content:d.content,id:d.id})
+        this.setState(newState);
+        //this.props.history.push('/ShowDiscussion/' + this.state.id)
+        // this.props.history.push('/List')      
+    })
 		.catch(function(error) {
   			console.log('Problem with fetch operation: ' + error.message);
 		});
@@ -85,7 +92,7 @@ class Show extends React.Component {
                 'Authorization' :'Basic '+btoa(email+":"+password)
             }
         };
-        let myRequest = new Request('http://localhost:8080/discussions/messages/' + id, myInit);
+        let myRequest = new Request('/discussions/messages/' + id, myInit);
 
         fetch(myRequest,myInit).then(data => {
   			let newState ={ listItems: this.state.listItems.filter(i=>i.id!==id) }; 
@@ -107,14 +114,14 @@ class Show extends React.Component {
 			  		<div className="collapse navbar-collapse" id="navbarNav">
 			    		<ul className="navbar-nav mr-auto">
 			    			<li className="nav-item active">
-			        			<a className="nav-link" href="/List">List of discussions 
+			        			<button className="nav-link ml-4 btn btn-secondary text-white btn-sm" onClick={() => this.props.history.push('/ListDiscussions')}>List of discussions 
 			        				<span className="sr-only"></span>
-			        			</a>
+			        			</button>
 			      			</li>
 			      			<li className="nav-item active">
-			        			<a className="nav-link" href="/New">New discussion 
+			        			<button className="nav-link ml-4 btn btn-secondary text-white btn-sm" onClick={() => this.props.history.push('/NewDiscussion')}>New discussion 
 			        				<span className="sr-only"></span>
-			        			</a>
+			        			</button>
 			      			</li>
 			    		</ul>
     					<span className="navbar-text mr-4" id="user">
@@ -135,7 +142,7 @@ class Show extends React.Component {
 	    				<label>Add a message</label>
 	    				<textarea className="form-control" name="content" rows="1" onChange={this.setContent} required></textarea>
 	  				</div>
-	  				<button type="submit" className="btn btn-primary ml-4 mb-4" onClick={() => this.addMessage()}>
+	  				<button className="btn btn-primary ml-4 mb-4" onClick={() => this.addMessage()}>
 	  					<FontAwesomeIcon icon={faPlus} className="mr-2"/>
 	  					Add a message
 	  				</button>
@@ -177,10 +184,10 @@ class Show extends React.Component {
 	}
 }
 
-export default Show;
+export default ShowDiscussion;
 
 ReactDOM.render(
-	<Show />,
+	<ShowDiscussion />,
 	document.getElementById('root')
 );
 

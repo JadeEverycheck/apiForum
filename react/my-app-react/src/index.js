@@ -7,23 +7,22 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { Route, Link, Switch, HashRouter, BrowserRouter} from "react-router-dom";
 
 import Login from "./login.js";
-import List from "./list.js";
-import New from "./new.js";
-import Show from "./show.js";
+import ListDiscussions from "./listDiscussions.js";
+import NewDiscussion from "./newDiscussion.js";
+import ShowDiscussion from "./showDiscussion.js";
 
 
 class Index extends React.Component {
 	render() {
-		console.log('cc')
 		return (
 			<div>
-				<BrowserRouter basename="/react">
+				<BrowserRouter>
 					<Switch>
 						<Route exact path="/" component={Welcome} />
 						<Route path="/Login" component={Login} />
-						<Route path="/List" component={List} />
-						<Route path="/New" component={New} />
-						<Route path={"/Show/:id"} component={Show} />
+						<Route path="/ListDiscussions" component={ListDiscussions} />
+						<Route path="/NewDiscussion" component={NewDiscussion} />
+						<Route path={"/ShowDiscussion/:id"} component={ShowDiscussion} />
 					</Switch>
 				</BrowserRouter>
 			</div>
