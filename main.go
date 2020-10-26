@@ -20,7 +20,6 @@ type FakeFileSystem struct {
 }
 
 func (ffs *FakeFileSystem) Open(name string) (http.File, error) {
-	fmt.Println("opening : " + name)
 	file, err := ffs.fs.Open(name)
 	if err != nil {
 		return ffs.fs.Open("/index.html")
