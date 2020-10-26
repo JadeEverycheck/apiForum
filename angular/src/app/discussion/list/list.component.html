@@ -1,0 +1,6 @@
+<p>list works!</p>
+<ul>
+	<li *ngFor="let item of items">
+		<a routerLink="/discussions/{{item.id}}" routerLinkActive="active">{{ item.name }}</a>
+	</li>
+</ul>
