@@ -35,7 +35,7 @@ class Login extends React.Component {
 				  </div>
 				  <div className="form-group mt-2 mx-4">
 				    <label htmlFor="password">Password</label>
-				    <input type="password" className="form-control" id="password" name="password" onChange={this.changePassword} required />
+				    <input type="password" autocomplete="current-password" className="form-control" id="password" name="password" onChange={this.changePassword} required />
 				  </div>
 				  <input type='submit' value="Submit" className="btn btn-secondary ml-4"/>
 				</form>
