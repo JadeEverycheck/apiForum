@@ -1,1 +1,40 @@
-<p>show works! {{ id }}</p>
+<h1 class="mt-4 ml-4">Discussion about {{id}}</h1>
+<hr />
+<form>
+	<div class="form-group mx-4">
+		<label>Add a message</label>
+		<textarea class="form-control" name="content" rows="1" required></textarea>
+	</div>
+	<button class="btn btn-primary ml-4 mb-4">
+		<span class="fa fa-plus mr-2"></span>
+		Add a message
+	</button>
+</form>
+<table class="table mx-4">
+	<thead class="thead-light">
+		<tr>
+			<th scope="col">User
+				<span class="fa fa-user ml-2"></span>
+			</th>
+			<th scope="col">Content
+				<span class="fa fa-book-open ml-2"></span>
+			</th>
+			<th scope="col">Date
+				<span class="fa-fa-calendar-day ml-2"></span>
+			</th>
+			<th scope="col">Action</th>
+		</tr>
+	</thead>
+	<tbody>
+			<tr *ngFor="let item of items">
+				<td>{{item.user}}</td>
+				<td>{{item.content}}</td>
+				<td>{{item.date}}</td>
+				<td>
+					<button class="btn btn-sm btn-danger ml-2">
+						<span class="fa fa-trash-alt justify-content-md-center"></span>
+					</button>
+				</td>
+			</tr> 
+	</tbody>
+</table>
