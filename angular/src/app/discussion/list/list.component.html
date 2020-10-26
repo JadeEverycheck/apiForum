@@ -1,6 +1,24 @@
-<p>list works!</p>
-<ul>
-	<li *ngFor="let item of items">
-		<a routerLink="/discussions/{{item.id}}" routerLinkActive="active">{{ item.name }}</a>
-	</li>
-</ul>
+<h1 class="ml-4 mt-4">
+	List of discussions
+	<span class="fa fa-comments ml-2"></span>
+</h1>
+<hr />
+<div class="col-12">
+	<div class="list-group">
+		<li *ngFor="let item of items" class="list-group-item d-flex justify-content-between align-items-center bg-light mb-2 border">
+			{{item.name}}
+			<div>
+				<button class="btn btn-sm btn-primary" routerLink="/discussions/{{item.id}}" routerLinkActive="active">
+					<span class="fa fa-eye justify-content-md-center"></span>
+				</button>
+				<button class="btn btn-sm btn-danger ml-2">
+					<span class="fa fa-trash-alt justify-content-md-center"></span>
+				</button>
+			</div>
+		</li>
+	</div>
+</div>
+<button class="btn btn-secondary ml-4 mt-4">
+	<span class="fa fa-plus mr-2"></span>
+	Add a discussion
+</button>
