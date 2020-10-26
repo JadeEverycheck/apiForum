@@ -1,1 +1,13 @@
-<p class="text-success" >login works! : {{ title }}</p>
+<h1 class="ml-4">Identification</h1>
+<hr />
+<form>
+	<div class="login-form mx-4">
+		<label htmlFor="email">Email address</label>
+		<input type="email" class="form-control" id="email" name="email" required />
+	</div>
+	<div class="form-group mt-2 mx-4">
+		<label htmlFor="password">Password</label>
+		<input type="password" autocomplete="current-password" class="form-control" id="password" name="password" required />
+	</div>
+	<input type='submit' value="Submit" class="btn btn-secondary ml-4"/>
+</form>
