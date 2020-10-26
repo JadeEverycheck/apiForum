@@ -71,7 +71,6 @@ class ListDiscussions extends React.Component {
   	}
 
   	show(id, subject) {
-  		console.log(id)
 		localStorage.setItem('id', id);
 		localStorage.setItem('subject', subject);
   		this.props.history.push('/ShowDiscussion/' + id);
