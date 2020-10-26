@@ -41,3 +41,7 @@ func BadRequest(w http.ResponseWriter, message string) {
 func ServerError(w http.ResponseWriter, message string) {
 	Json(w, http.StatusInternalServerError, message)
 }
+
+func Unauthorized(w http.ResponseWriter) {
+	Json(w, http.StatusUnauthorized, nil)
+}

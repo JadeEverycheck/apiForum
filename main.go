@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/go-chi/chi"
 	chimiddleware "github.com/go-chi/chi/middleware"
@@ -53,6 +54,11 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 }
 
 func main() {
+	var jwtKey string
+
+	flag.StringVar(&jwtKey, "secret", "unsecuredsecret", "select a secret to generate jwt")
+	flag.Parse()
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -89,6 +95,10 @@ func main() {
 	db.AutoMigrate(&api.User{})
 	db.AutoMigrate(&api.Discussion{})
 	db.AutoMigrate(&api.DBMessage{})
+
+	r.Route("/login", func(r chi.Router) {
+		r.Post("/", api.Login(db, []byte(jwtKey)))
+	})
 
 	r.Route("/users", func(r chi.Router) {
 		r.Get("/", api.GetAllUsers(db))
