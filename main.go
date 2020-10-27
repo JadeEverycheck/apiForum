@@ -56,7 +56,7 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 func main() {
 	var jwtKey string
 
-	flag.StringVar(&jwtKey, "secret", "unsecuredsecret", "select a secret to generate jwt")
+	flag.StringVar(&jwtKey, "secret", "unsecuredsecret", "choose a secret to generate jwt")
 	flag.Parse()
 
 	port := os.Getenv("PORT")
@@ -98,6 +98,11 @@ func main() {
 
 	r.Route("/login", func(r chi.Router) {
 		r.Post("/", api.Login(db, []byte(jwtKey)))
+		r.Get("/", api.Authenticate([]byte(jwtKey)))
+	})
+
+	r.Route("/authenticate", func(r chi.Router) {
+		r.Post("/", api.Authenticate([]byte(jwtKey)))
 	})
 
 	r.Route("/users", func(r chi.Router) {
@@ -106,7 +111,8 @@ func main() {
 		r.Post("/", api.CreateUser(db))
 	})
 	r.Route("/discussions", func(r chi.Router) {
-		r.Use(middleware.BasicAuth(db))
+		// r.Use(middleware.BasicAuth(db, []byte(jwtKey)))
+		r.Use(middleware.TokenAuth(db, []byte(jwtKey)))
 		r.Get("/", api.GetAllDiscussions(db))
 		r.Get("/{id}", api.GetDiscussion(db))
 		r.Delete("/{id}", api.DeleteDiscussion(db))

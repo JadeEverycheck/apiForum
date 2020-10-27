@@ -21,6 +21,10 @@ type JWTEncoded struct {
 	jwt.StandardClaims
 }
 
+type TokenBody struct {
+	Tkn string `json:"token"`
+}
+
 func Login(db *gorm.DB, secret []byte) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		body, err := ioutil.ReadAll(r.Body)
@@ -62,6 +66,41 @@ func Login(db *gorm.DB, secret []byte) func(w http.ResponseWriter, r *http.Reque
 			response.BadRequest(w, err.Error())
 			return
 		}
-		response.Created(w, tokenString)
+		tokenBody := TokenBody{Tkn: tokenString}
+		response.Created(w, tokenBody)
+	}
+}
+
+func Authenticate(secret []byte) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			response.ServerError(w, err.Error())
+			return
+		}
+		r.Body.Close()
+		var token TokenBody
+		err = json.Unmarshal(body, &token)
+		if err != nil {
+			response.BadRequest(w, err.Error())
+			return
+		}
+		jwtencoded := &JWTEncoded{}
+		tkn, err := jwt.ParseWithClaims(token.Tkn, jwtencoded, func(token *jwt.Token) (interface{}, error) {
+			return secret, nil
+		})
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				response.Unauthorized(w)
+				return
+			}
+			response.BadRequest(w, err.Error())
+			return
+		}
+		if !tkn.Valid {
+			response.Unauthorized(w)
+			return
+		}
+		response.Ok(w, jwtencoded.Mail)
 	}
 }
