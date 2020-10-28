@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
-class Item {
+
+class Discussion {
 	id: number;
-	name:string;
-	constructor(id:number, name:string){
-		this.id =id;
-		this.name = name;
-	}
+	subject:string;
 }
 
 @Component({
@@ -15,13 +14,22 @@ class Item {
 	styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-	items:Array<Item>=[];
-	constructor() { }
+	discussions:Array<Discussion>=[];
+
+	constructor(
+		private httpClient: HttpClient
+	) { }
 
 	ngOnInit(): void {
-		for(let i=0;i<5;i++){
-			this.items.push(new Item(this.items.length,"test "+this.items.length))
-		}
+		let headers = {
+	    	'Authorization': 'Bearer ' + localStorage.getItem('token')
+		};
+    
+		this.httpClient.get<Array<Discussion>>(environment.url + "/discussions", { headers: headers }).subscribe(
+			r => {
+				this.discussions = r; 
+			}
+		);
 	}
 
 }
