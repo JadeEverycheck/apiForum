@@ -165,6 +165,14 @@ func CreateMessage(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 		if result.Error != nil {
 			response.ServerError(w, result.Error.Error())
 		}
-		response.Created(w, message)
+		response.Created(w, JsonMessage{
+			Id:      message.Id,
+			Content: message.Content,
+			Date:    message.Date,
+			User: JsonUser{
+				Id:   user.Id,
+				Mail: user.Mail,
+			},
+		})
 	}
 }

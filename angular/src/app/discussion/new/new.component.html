@@ -3,9 +3,9 @@
 <form>
 	<div class="form-group mx-4">
 		<label htmlFor="subject">Add a subject</label>
-		<textarea class="form-control" id="subject" name="subject" rows="1" [(ngModel)]="credential.subject" required></textarea>
+		<textarea class="form-control" id="subject" name="subject" rows="1" [(ngModel)]="this.newDiscussion" required></textarea>
 	</div>
-	<button type="submit" class="btn btn-primary ml-4" (click)="newDiscussion()">
+	<button type="submit" class="btn btn-primary ml-4" (click)="createDiscussion()">
 		<span class="fa fa-plus mr-2"></span>
 		Add
 	</button>

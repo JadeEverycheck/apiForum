@@ -6,11 +6,21 @@ import jwt_decode from 'jwt-decode';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
+
+class ApiUser{
+	id:number
+	mail:string
+}
+
 class ApiMessage {
 	id:number;
-	user:string;
+	user:ApiUser;
 	content:string;
 	date:Date;
+}
+
+class Discussion {
+	subject:string;
 }
 
 class Message {
@@ -19,15 +29,11 @@ class Message {
 	content:string;
 	date:string;
 	constructor(am:ApiMessage) {
-		this.user = am.user;
+		this.user = am.user.mail;
 		this.content = am.content;
 		this.date = moment(am.date).locale("fr").format("LLL");
 		this.id = am.id;
 	}
-}
-
-class Credential{
-	content:string = "";
 }
 
 @Component({
@@ -38,19 +44,20 @@ class Credential{
 
 export class ShowComponent implements OnInit {
 	discussion:Array<Message>=[];
-	id:number = Number(localStorage.getItem("discussionId"));
-	credential:Credential = new Credential();
-	subject:string = localStorage.getItem("subject");
-	actualUserMail:string = jwt_decode(localStorage.getItem('token')).mail;
+	id:number;
+	newMessage:string ="";
+	subject:string = "";
 
 	constructor(
 		private httpClient: HttpClient,
     	private route: ActivatedRoute,
-    	private router: Router,
-    	private activatedRoute: ActivatedRoute
+    	private router: Router
     ) {};
 
 	ngOnInit(): void {
+		let stringId:string = this.route.snapshot.paramMap.get('id');
+		this.id = parseInt(stringId);
+
 		let headers = {
 	    	'Authorization': 'Bearer ' + localStorage.getItem('token')
 		};
@@ -60,25 +67,26 @@ export class ShowComponent implements OnInit {
 				this.discussion = r.map(e=>new Message(e)); 
 			}
 		);
+		this.httpClient.get<Discussion>(environment.url + "/discussions/" + this.id , { headers: headers })
+		.subscribe(
+			r => {
+				this.subject = r.subject; 
+			}
+		);
 	}
 
-	newMessage(){
+	addMessage(){
 		let headers = {
 	    	'Authorization': 'Bearer ' + localStorage.getItem('token')
 		};
 		let body = { 
-			"content": this.credential.content
+			"content": this.newMessage
 		};
-    	this.httpClient.post<Message>(environment.url+"/discussions/" + this.id + "/messages", body, { headers: headers }).subscribe(
-			// r => { 
-			// 	this.discussion.push({ id: r.id, user: this.actualUserMail, content: r.content, date: r.date});
-			// }
-			d => {
-        		let newState:Array<Message> = []; 
-        		this.discussion.forEach(d=>newState.push(d));
-        		newState.push({date: d.date, user:this.actualUserMail, content:d.content,id:d.id});
-        		this.discussion = newState;  
-    		}
+    	this.httpClient.post<ApiMessage>(environment.url+"/discussions/" + this.id + "/messages", body, { headers: headers }).subscribe(
+			r => { 
+				this.newMessage = ""
+				this.discussion.push(new Message(r));
+			}
     	);
     }
 

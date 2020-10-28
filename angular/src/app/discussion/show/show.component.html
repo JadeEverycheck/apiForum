@@ -3,9 +3,9 @@
 <form>
 	<div class="form-group mx-4">
 		<label>Add a message</label>
-		<textarea class="form-control" name="content" rows="1" [(ngModel)]="credential.content" required></textarea>
+		<textarea class="form-control" name="content" rows="1" [(ngModel)]="newMessage" required></textarea>
 	</div>
-	<button class="btn btn-primary ml-4 mb-4" (click)="newMessage()">
+	<button class="btn btn-primary ml-4 mb-4" (click)="addMessage()">
 		<span class="fa fa-plus mr-2"></span>
 		Add a message
 	</button>
@@ -27,7 +27,7 @@
 	</thead>
 	<tbody>
 		<tr *ngFor="let item of discussion">
-			<td>{{item.user.mail}}</td>
+			<td>{{item.user}}</td>
 			<td>{{item.content}}</td>
 			<td>{{item.date}}</td>
 			<td>

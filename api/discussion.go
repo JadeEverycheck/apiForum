@@ -70,7 +70,10 @@ func GetDiscussion(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 			response.NotFound(w)
 		}
 		if discussion.Id != 0 {
-			response.Ok(w, discussion)
+			response.Ok(w, JsonDiscussion{
+				Id:      discussion.Id,
+				Subject: discussion.Subject,
+			})
 		}
 	}
 }
