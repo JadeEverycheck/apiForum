@@ -12,7 +12,7 @@ import (
 )
 
 type Identifiers struct {
-	Mail     string `json:"mail"`
+	Mail     string `json:"email"`
 	Password string `json:"password"`
 }
 
@@ -42,12 +42,13 @@ func Login(db *gorm.DB, secret []byte) func(w http.ResponseWriter, r *http.Reque
 		user := User{}
 		result := db.Where("Mail = ?", id.Mail).First(&user)
 		if result.Error != nil {
-			response.Unauthorized(w)
+			response.BadRequest(w, "Invalid credential")
+			return
 		}
 
 		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(id.Password))
 		if err != nil {
-			response.Unauthorized(w)
+			response.BadRequest(w, "Invalid credential")
 			return
 		}
 

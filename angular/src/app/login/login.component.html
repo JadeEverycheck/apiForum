@@ -1,13 +1,48 @@
 <h1 class="ml-4">Identification</h1>
 <hr />
-<form>
+<ng-cnontainer *ngIf="state=='Empty' || state=='Filled' ">
 	<div class="login-form mx-4">
-		<label htmlFor="email">Email address</label>
-		<input type="email" class="form-control" id="email" name="email" required />
+		<label for="email">Email address</label>
+		<input type="email" class="form-control" id="email" [(ngModel)]="credential.email" (keyup)="onInputChanged()"/>
 	</div>
 	<div class="form-group mt-2 mx-4">
-		<label htmlFor="password">Password</label>
-		<input type="password" autocomplete="current-password" class="form-control" id="password" name="password" required />
+		<label for="password">Password</label>
+		<input type="password" class="form-control" id="password" [(ngModel)]="credential.password" (keyup)="onInputChanged()"/>
+	</div>	
+</ng-cnontainer>
+<ng-cnontainer *ngIf="state=='Error'">
+	<div class="login-form mx-4">
+		<label for="email">Email address</label>
+		<input type="email" class="form-control is-invalid" id="email" [(ngModel)]="credential.email" (keyup)="onInputChanged()"/>
 	</div>
-	<input type='submit' value="Submit" class="btn btn-secondary ml-4"/>
-</form>
+	<div class="form-group mt-2 mx-4">
+		<label for="password">Password</label>
+		<input type="password" class="form-control is-invalid" id="password" [(ngModel)]="credential.password" (keyup)="onInputChanged()"/>
+		<div class="invalid-feedback">
+			Please provide a valid login and password
+		</div>
+	</div>	
+</ng-cnontainer>
+<ng-cnontainer *ngIf="state=='Loading'">
+	<div class="login-form mx-4">
+		<label for="email">Email address</label>
+		<input type="email" class="form-control" id="email" [ngModel]="credential.email" disabled/>
+	</div>
+	<div class="form-group mt-2 mx-4">
+		<label for="password">Password</label>
+		<input type="password" class="form-control" id="password" [ngModel]="credential.password" disabled/>
+	</div>	
+</ng-cnontainer>
+
+<button *ngIf="state=='Empty'" class="btn btn-primary ml-4" disabled>
+	Submit
+	<span class="fa fa-sign-in-alt ml-2"></span>
+</button>
+<button *ngIf="state=='Filled'|| state=='Error'" class="btn btn-primary ml-4" (click)="submit()">
+	Submit
+	<span class="fa fa-sign-in-alt ml-2"></span>
+</button>
+<button *ngIf="state=='Loading'" class="btn btn-primary ml-4" disabled>
+	Submiting ...
+	<span class="fa fa-pulse fa-spinner ml-2"></span>
+</button>
