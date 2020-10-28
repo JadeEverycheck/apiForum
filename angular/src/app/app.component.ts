@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import jwt_decode from 'jwt-decode';
+
+// let actualUserMail:string = jwt_decode(localStorage.getItem('token')).mail;
+
 
 @Component({
   selector: 'app-root',
@@ -7,4 +11,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title:string = 'jade first angular';
+  actualUserMail:string = jwt_decode(localStorage.getItem('token')).mail;
 }

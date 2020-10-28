@@ -74,9 +74,7 @@ class ShowDiscussion extends React.Component {
         let newState ={ listItems: [] }; 
         this.state.listitem.forEach(d=>newState.listItems.push(d))
         newState.listItems.push({date: d.date, user:d.user.mail, content:d.content,id:d.id})
-        this.setState(newState);
-        //this.props.history.push('/ShowDiscussion/' + this.state.id)
-        // this.props.history.push('/List')      
+        this.setState(newState);  
     })
 		.catch(function(error) {
   			console.log('Problem with fetch operation: ' + error.message);

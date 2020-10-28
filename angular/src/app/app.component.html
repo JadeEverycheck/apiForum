@@ -6,20 +6,20 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item active">
-					<a class="nav-link ml-4 btn btn-secondary text-white btn-sm" routerLink="/create-discussion" routerLinkActive="active">New discussion 
+				<li>
+					<a class="nav-link ml-4 btn btn-secondary text-white btn-sm" routerLink="/discussions" routerLinkActive="active">List of discussions 
 						<span class="sr-only"></span>
 					</a>
 				</li>
-				<li>
-					<a class="nav-link ml-4 btn btn-secondary text-white btn-sm" routerLink="/discussions" routerLinkActive="active">Discussion 
+				<li class="nav-item active">
+					<a class="nav-link ml-4 btn btn-secondary text-white btn-sm" routerLink="/create-discussion" routerLinkActive="active">New discussion 
 						<span class="sr-only"></span>
 					</a>
 				</li>
 			</ul>
 			<span class="navbar-text mx-4" id="user">
 				<span class="fa fa-user mx-2"></span>
-				Email
+				: {{this.actualUserMail}}
 			</span>
 			<span class="mx-4">
 				<a class="btn btn-sm btn-secondary ml-4" routerLink="/login" routerLinkActive="active">
