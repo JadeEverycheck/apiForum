@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
 	mail:string="";
-	
+	title:string = "Angular App";
 	constructor(private router: Router) {}
 
 	decodeToken(){

@@ -89,10 +89,10 @@ func main() {
 	// filesDir := http.Dir(filepath.Join(workDir, "static"))
 	// FileServer(r, "/static", filesDir)
 
-	filesDir := http.Dir(filepath.Join(workDir, "react/my-app-react/build"))
-	FileServer(r, "/", ToFakeFs(filesDir))
+	// filesDir := http.Dir(filepath.Join(workDir, "react/my-app-react/build"))
+	// FileServer(r, "/", ToFakeFs(filesDir))
 
-	filesDir = http.Dir(filepath.Join(workDir, "angular/src"))
+	filesDir := http.Dir(filepath.Join(workDir, "angular/dist/angular"))
 	FileServer(r, "/angular", ToFakeFs(filesDir))
 
 	db.AutoMigrate(&api.User{})
