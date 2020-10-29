@@ -16,11 +16,11 @@ import (
 	"strings"
 )
 
-type FakeFileSystem struct {
+type RedirectToIndexFileSystem struct {
 	fs http.FileSystem
 }
 
-func (ffs *FakeFileSystem) Open(name string) (http.File, error) {
+func (ffs *RedirectToIndexFileSystem) Open(name string) (http.File, error) {
 	file, err := ffs.fs.Open(name)
 	if err != nil {
 		return ffs.fs.Open("/index.html")
@@ -28,8 +28,8 @@ func (ffs *FakeFileSystem) Open(name string) (http.File, error) {
 	return file, nil
 }
 
-func ToFakeFs(fs http.FileSystem) http.FileSystem {
-	return &FakeFileSystem{
+func ToRedirectToIndexFS(fs http.FileSystem) http.FileSystem {
+	return &RedirectToIndexFileSystem{
 		fs: fs,
 	}
 }
@@ -55,8 +55,12 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 
 func main() {
 	var jwtKey string
+	var frontDistFolder string
+	var corsEnabled bool
 
 	flag.StringVar(&jwtKey, "secret", "unsecuredsecret", "choose a secret to generate jwt")
+	flag.StringVar(&frontDistFolder, "front", "angular/dist/angular", "select where the front static site is")
+	flag.BoolVar(&corsEnabled, "cors", false, "enable cors")
 	flag.Parse()
 
 	port := os.Getenv("PORT")
@@ -69,62 +73,51 @@ func main() {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	// defer db.Close()
 
 	r := chi.NewRouter()
 	r.Use(chimiddleware.Logger)
 	r.Use(chimiddleware.Recoverer)
-	r.Use(cors.Handler(cors.Options{
-		// AllowedOrigins: []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"*"},
-		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: false,
-		MaxAge:           300, // Maximum value not ignored by any of major browsers
-	}))
+	if corsEnabled {
+		r.Use(cors.Handler(cors.Options{
+			AllowedOrigins:   []string{"*"},
+			AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+			ExposedHeaders:   []string{"Link"},
+			AllowCredentials: false,
+			MaxAge:           300,
+		}))
+	}
 
 	workDir, _ := os.Getwd()
-	// filesDir := http.Dir(filepath.Join(workDir, "static"))
-	// FileServer(r, "/static", filesDir)
-
-	// filesDir := http.Dir(filepath.Join(workDir, "react/my-app-react/build"))
-	// FileServer(r, "/", ToFakeFs(filesDir))
-
-	filesDir := http.Dir(filepath.Join(workDir, "angular/dist/angular"))
-	FileServer(r, "/angular", ToFakeFs(filesDir))
+	filesDir := http.Dir(filepath.Join(workDir, frontDistFolder))
+	FileServer(r, "/", ToRedirectToIndexFS(filesDir))
 
 	db.AutoMigrate(&api.User{})
 	db.AutoMigrate(&api.Discussion{})
 	db.AutoMigrate(&api.DBMessage{})
 
-	r.Route("/login", func(r chi.Router) {
-		r.Post("/", api.Login(db, []byte(jwtKey)))
-		r.Get("/", api.Authenticate([]byte(jwtKey)))
-	})
+	r.Route("/api", func(r chi.Router) {
+		r.Route("/login", func(r chi.Router) {
+			r.Post("/", api.Login(db, []byte(jwtKey)))
+		})
 
-	r.Route("/authenticate", func(r chi.Router) {
-		r.Post("/", api.Authenticate([]byte(jwtKey)))
-	})
-
-	r.Route("/users", func(r chi.Router) {
-		r.Get("/", api.GetAllUsers(db))
-		r.Get("/{id}", api.GetUser(db))
-		r.Post("/", api.CreateUser(db))
-	})
-	r.Route("/discussions", func(r chi.Router) {
-		// r.Use(middleware.BasicAuth(db, []byte(jwtKey)))
-		r.Use(middleware.TokenAuth(db, []byte(jwtKey)))
-		r.Get("/", api.GetAllDiscussions(db))
-		r.Get("/{id}", api.GetDiscussion(db))
-		r.Delete("/{id}", api.DeleteDiscussion(db))
-		r.Post("/", api.CreateDiscussion(db))
-		r.Put("/{id}", api.UpdateDiscussion(db))
-		r.Get("/{id}/messages", api.GetAllMessages(db))
-		r.Get("/messages/{id}", api.GetMessage(db))
-		r.Post("/{id}/messages", api.CreateMessage(db))
-		r.Delete("/messages/{id}", api.DeleteMessage(db))
+		r.Route("/users", func(r chi.Router) {
+			r.Get("/", api.GetAllUsers(db))
+			r.Get("/{id}", api.GetUser(db))
+			r.Post("/", api.CreateUser(db))
+		})
+		r.Route("/discussions", func(r chi.Router) {
+			r.Use(middleware.TokenAuth(db, []byte(jwtKey)))
+			r.Get("/", api.GetAllDiscussions(db))
+			r.Get("/{id}", api.GetDiscussion(db))
+			r.Delete("/{id}", api.DeleteDiscussion(db))
+			r.Post("/", api.CreateDiscussion(db))
+			r.Put("/{id}", api.UpdateDiscussion(db))
+			r.Get("/{id}/messages", api.GetAllMessages(db))
+			r.Get("/messages/{id}", api.GetMessage(db))
+			r.Post("/{id}/messages", api.CreateMessage(db))
+			r.Delete("/messages/{id}", api.DeleteMessage(db))
+		})
 	})
 	err = http.ListenAndServe(":"+port, r)
 
