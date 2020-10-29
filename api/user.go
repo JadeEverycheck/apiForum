@@ -2,12 +2,12 @@ package api
 
 import (
 	"encoding/json"
+	"forum/response"
 	"github.com/go-chi/chi"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"io/ioutil"
 	"net/http"
-	"new-forum/apiForum/response"
 	"strconv"
 )
 

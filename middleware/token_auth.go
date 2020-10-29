@@ -3,10 +3,10 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"forum/api"
 	"github.com/dgrijalva/jwt-go"
 	"gorm.io/gorm"
 	"net/http"
-	"new-forum/apiForum/api"
 	"strings"
 )
 

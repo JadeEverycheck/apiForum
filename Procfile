@@ -1,1 +1,1 @@
-web: apiForum 
+web: forum 

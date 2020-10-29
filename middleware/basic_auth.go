@@ -3,10 +3,10 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"forum/api"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"net/http"
-	"new-forum/apiForum/api"
 )
 
 func BasicAuth(db *gorm.DB, secret []byte) func(next http.Handler) http.Handler {

@@ -2,12 +2,12 @@ package api
 
 import (
 	"encoding/json"
+	"forum/response"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"io/ioutil"
 	"net/http"
-	"new-forum/apiForum/response"
 	"time"
 )
 
