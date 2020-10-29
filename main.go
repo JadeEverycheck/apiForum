@@ -59,7 +59,7 @@ func main() {
 	var corsEnabled bool
 
 	flag.StringVar(&jwtKey, "secret", "unsecuredsecret", "choose a secret to generate jwt")
-	flag.StringVar(&frontDistFolder, "front", "angular/dist/angular", "select where the front static site is")
+	flag.StringVar(&frontDistFolder, "front", "front/angular/build", "select where the front static site is")
 	flag.BoolVar(&corsEnabled, "cors", false, "enable cors")
 	flag.Parse()
 
