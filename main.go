@@ -90,7 +90,7 @@ func main() {
 	// FileServer(r, "/static", filesDir)
 
 	filesDir := http.Dir(filepath.Join(workDir, "react/my-app-react/build"))
-	FileServer(r, "/react", ToFakeFs(filesDir))
+	FileServer(r, "/", ToFakeFs(filesDir))
 
 	filesDir = http.Dir(filepath.Join(workDir, "angular/src"))
 	FileServer(r, "/angular", ToFakeFs(filesDir))
