@@ -32,11 +32,6 @@ export class ListComponent implements OnInit {
 		);
 	}
 
-	prepareShow(subject, id) {
-		localStorage.setItem("subject", subject);
-		localStorage.setItem("discussionId", id);
-	}
-
 	deleteDiscussion(id){
 		let headers = {
 	    	'Authorization': 'Bearer ' + localStorage.getItem('token')

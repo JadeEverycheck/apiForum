@@ -8,7 +8,7 @@
 		<li *ngFor="let item of discussions" class="list-group-item d-flex justify-content-between align-items-center bg-light mb-2 border">
 			{{item.subject}}
 			<div>
-				<button class="btn btn-sm btn-primary" (click)="prepareShow(item.subject, item.id)" routerLink="/discussions/{{item.id}}" routerLinkActive="active">
+				<button class="btn btn-sm btn-primary" routerLink="/discussions/{{item.id}}" routerLinkActive="active">
 					<span class="fa fa-eye justify-content-md-center"></span>
 				</button>
 				<button class="btn btn-sm btn-danger ml-2" (click)="deleteDiscussion(item.id)">
