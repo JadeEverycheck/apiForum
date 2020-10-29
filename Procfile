@@ -1,1 +1,1 @@
-web: apiForum
+web: apiForum -front front/react/build
