@@ -1,13 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import jwt_decode from 'jwt-decode';
-
-// let actualUserMail:string = jwt_decode(localStorage.getItem('token')).mail;
-
-
-class Token {
-	mail:string;
-	exp:number;
-}
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-root',
@@ -15,22 +7,29 @@ class Token {
 	styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-	title:string = 'jade first angular';
-  	token:Token;
-
-	getDecodedAccessToken(token: string): any {
-    try{
-        return jwt_decode(token);
-    }
-    catch(Error){
-        return null;
-    }
-  }
-  	ngOnInit(){
-  		this.token = this.getDecodedAccessToken(localStorage.getItem("token"));
-  	}
-	// actualUserMail:string = jwt_decode(localStorage.getItem('token')).mail;
+	mail:string="";
 	
+	constructor(private router: Router) {}
+
+	decodeToken(){
+		this.mail="";
+		let token = localStorage.getItem("token");
+		if (token == null) {
+			return
+		}
+		let jwt = token.split(".");
+		if (jwt.length != 3) {
+			return
+		}
+		let payload = jwt[1];
+		let payloadDecoded = atob(payload);
+		this.mail = JSON.parse(payloadDecoded).mail;
+	}
+ 
+	ngOnInit(){
+		this.router.events.subscribe(()=>this.decodeToken());
+	}
+
 	clear() {
 		localStorage.clear();
 	}
